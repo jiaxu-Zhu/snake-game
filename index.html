@@ -275,10 +275,12 @@
         
         // 更新速度显示
         function updateSpeedDisplay() {
-            speedDisplay.textContent = `速度：${baseSpeed}`;
+            // 将毫秒间隔转换为直观的速度值（越大越快）
+            const displayValue = maxSpeed - baseSpeed + minSpeed;
+            speedDisplay.textContent = `速度：${displayValue}`;
         }
         
-        // 增加速度（减小间隔）
+        // 增加速度（减小间隔，游戏变快）
         function increaseSpeed() {
             if (baseSpeed > minSpeed) {
                 baseSpeed = Math.max(minSpeed, baseSpeed - speedStep);
@@ -294,7 +296,7 @@
             }
         }
         
-        // 减少速度（增大间隔）
+        // 减少速度（增大间隔，游戏变慢）
         function decreaseSpeed() {
             if (baseSpeed < maxSpeed) {
                 baseSpeed = Math.min(maxSpeed, baseSpeed + speedStep);
