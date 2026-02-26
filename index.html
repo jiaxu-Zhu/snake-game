@@ -84,28 +84,39 @@
         .mobile-controls {
             display: none;
             margin-top: 20px;
-            grid-template-columns: repeat(3, 60px);
-            gap: 5px;
+            display: grid;
+            grid-template-columns: repeat(3, 70px);
+            grid-template-rows: repeat(2, 70px);
+            gap: 8px;
+            justify-content: center;
         }
         
         .mobile-btn {
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.3);
-            border: 2px solid white;
-            border-radius: 10px;
-            font-size: 24px;
+            width: 70px;
+            height: 70px;
+            background: rgba(255,255,255,0.25);
+            border: 2px solid rgba(255,255,255,0.6);
+            border-radius: 15px;
+            font-size: 28px;
             color: white;
             cursor: pointer;
             touch-action: manipulation;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
         
         .mobile-btn:active {
-            background: rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.45);
+            transform: scale(0.95);
         }
         
         .mobile-btn.empty {
             visibility: hidden;
+            pointer-events: none;
         }
         
         @media (max-width: 500px) {
@@ -125,6 +136,10 @@
             .game-info {
                 font-size: 16px;
             }
+            
+            .instructions {
+                display: none;
+            }
         }
         
         .instructions {
@@ -132,6 +147,23 @@
             margin-top: 15px;
             font-size: 14px;
             text-align: center;
+        }
+        
+        .mobile-instructions {
+            display: none;
+            color: rgba(255,255,255,0.8);
+            margin-top: 10px;
+            font-size: 13px;
+            text-align: center;
+        }
+        
+        @media (max-width: 500px) {
+            .mobile-instructions {
+                display: block;
+            }
+            .instructions {
+                display: none;
+            }
         }
     </style>
 </head>
@@ -150,14 +182,15 @@
     
     <div class="mobile-controls">
         <button class="mobile-btn empty"></button>
-        <button class="mobile-btn" id="upBtn">⬆️</button>
+        <button class="mobile-btn" id="upBtn">▲</button>
         <button class="mobile-btn empty"></button>
-        <button class="mobile-btn" id="leftBtn">⬅️</button>
-        <button class="mobile-btn" id="downBtn">⬇️</button>
-        <button class="mobile-btn" id="rightBtn">➡️</button>
+        <button class="mobile-btn" id="leftBtn">◀</button>
+        <button class="mobile-btn" id="downBtn">▼</button>
+        <button class="mobile-btn" id="rightBtn">▶</button>
     </div>
     
     <p class="instructions">使用方向键或 WASD 控制蛇的移动</p>
+    <p class="mobile-instructions">点击方向按钮或滑动画布控制</p>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
