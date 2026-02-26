@@ -94,11 +94,13 @@
             color: white;
             font-size: 14px;
             font-weight: bold;
+            min-width: 80px;
+            text-align: center;
         }
         
         .speed-btn {
             padding: 8px 20px;
-            font-size: 14px;
+            font-size: 16px;
             border: 2px solid rgba(255,255,255,0.5);
             background: rgba(255,255,255,0.15);
             color: white;
@@ -113,9 +115,9 @@
             transform: scale(1.05);
         }
         
-        .speed-btn.active {
-            background: #2196F3;
-            border-color: #2196F3;
+        .speed-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
         
         .mobile-controls {
@@ -218,10 +220,9 @@
     </div>
     
     <div class="speed-controls">
-        <span class="speed-label">速度:</span>
-        <button class="speed-btn" data-speed="150">慢速</button>
-        <button class="speed-btn active" data-speed="100">中速</button>
-        <button class="speed-btn" data-speed="60">快速</button>
+        <button class="speed-btn" id="slowBtn">⬇️ 减速</button>
+        <span class="speed-label" id="speedDisplay">速度：100</span>
+        <button class="speed-btn" id="fastBtn">⬆️ 加速</button>
     </div>
     
     <div class="mobile-controls">
@@ -243,6 +244,9 @@
         const highScoreElement = document.getElementById('highScore');
         const startBtn = document.getElementById('startBtn');
         const pauseBtn = document.getElementById('pauseBtn');
+        const slowBtn = document.getElementById('slowBtn');
+        const fastBtn = document.getElementById('fastBtn');
+        const speedDisplay = document.getElementById('speedDisplay');
         
         // 游戏配置
         const gridSize = 20;
@@ -261,19 +265,25 @@
         let baseSpeed = parseInt(localStorage.getItem('snakeSpeed')) || 100;
         let gameSpeed = baseSpeed;
         
-        highScoreElement.textContent = highScore;
+        // 速度范围
+        const minSpeed = 30;   // 最快（间隔最小）
+        const maxSpeed = 200;  // 最慢（间隔最大）
+        const speedStep = 10;  // 每次调整的步长
         
-        // 速度控制
-        const speedButtons = document.querySelectorAll('.speed-btn');
-        speedButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // 更新 UI
-                speedButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // 保存选择
-                baseSpeed = parseInt(btn.dataset.speed);
+        highScoreElement.textContent = highScore;
+        updateSpeedDisplay();
+        
+        // 更新速度显示
+        function updateSpeedDisplay() {
+            speedDisplay.textContent = `速度：${baseSpeed}`;
+        }
+        
+        // 增加速度（减小间隔）
+        function increaseSpeed() {
+            if (baseSpeed > minSpeed) {
+                baseSpeed = Math.max(minSpeed, baseSpeed - speedStep);
                 localStorage.setItem('snakeSpeed', baseSpeed);
+                updateSpeedDisplay();
                 
                 // 如果游戏中，立即应用新速度
                 if (isGameRunning && !isPaused) {
@@ -281,8 +291,28 @@
                     clearInterval(gameLoop);
                     gameLoop = setInterval(update, gameSpeed);
                 }
-            });
-        });
+            }
+        }
+        
+        // 减少速度（增大间隔）
+        function decreaseSpeed() {
+            if (baseSpeed < maxSpeed) {
+                baseSpeed = Math.min(maxSpeed, baseSpeed + speedStep);
+                localStorage.setItem('snakeSpeed', baseSpeed);
+                updateSpeedDisplay();
+                
+                // 如果游戏中，立即应用新速度
+                if (isGameRunning && !isPaused) {
+                    gameSpeed = baseSpeed;
+                    clearInterval(gameLoop);
+                    gameLoop = setInterval(update, gameSpeed);
+                }
+            }
+        }
+        
+        // 按钮事件
+        slowBtn.addEventListener('click', decreaseSpeed);
+        fastBtn.addEventListener('click', increaseSpeed);
         
         // 初始化游戏
         function initGame() {
@@ -643,13 +673,6 @@
         }
         
         window.addEventListener('resize', resizeCanvas);
-        
-        // 初始化速度按钮状态
-        speedButtons.forEach(btn => {
-            if (parseInt(btn.dataset.speed) === baseSpeed) {
-                btn.classList.add('active');
-            }
-        });
         
         // 初始化
         initGame();
