@@ -434,13 +434,10 @@
         .btn-primary:hover {
             opacity: 0.9;
         }
-    <style>
+    </style>
 </head>
 <body>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <h1>🐍 贪吃蛇</h1>
-        <button class="version-btn" onclick="showVersion()" style="position: static; transform: none; padding: 6px 12px; font-size: 0.85em;">📋 版本</button>
-    </div>
+    <h1>🐍 贪吃蛇</h1>
     <div class="game-info">
         <span>分数：<strong id="score">0</strong></span>
         <span>最高分：<strong id="highScore">0</strong></span>
@@ -483,15 +480,19 @@
     <p class="instructions">使用方向键或 WASD 控制蛇的移动</p>
     <p class="mobile-instructions">点击方向按钮或滑动画布控制</p>
     
+    <div class="footer" style="position: fixed; bottom: 10px; left: 50%; transform: translateX(-50%); z-index: 100;">
+        <button class="version-btn" onclick="showVersion()">📋 版本信息</button>
+    </div>
+    
     <div class="modal" id="versionModal">
         <div class="modal-content">
             <h2>📋 版本信息</h2>
-            <p><strong>当前版本:</strong> v1.2.2</p>
+            <p><strong>当前版本:</strong> v1.2.3</p>
             <p><strong>更新时间:</strong> 2026-02-27</p>
             <hr style="margin: 15px 0; border: none; border-top: 1px solid #ddd;">
             <p><strong>更新内容:</strong></p>
             <ul style="text-align: left; margin-left: 20px; line-height: 1.8;">
-                <li>将版本按钮移到页面顶部，彻底解决遮挡问题</li>
+                <li>将版本按钮固定在页面底部中央</li>
             </ul>
             <button class="btn-primary" onclick="hideVersion()">确定</button>
         </div>
