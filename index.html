@@ -81,6 +81,43 @@
             transform: scale(1.05);
         }
         
+        .speed-controls {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .speed-label {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .speed-btn {
+            padding: 8px 20px;
+            font-size: 14px;
+            border: 2px solid rgba(255,255,255,0.5);
+            background: rgba(255,255,255,0.15);
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        
+        .speed-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: scale(1.05);
+        }
+        
+        .speed-btn.active {
+            background: #2196F3;
+            border-color: #2196F3;
+        }
+        
         .mobile-controls {
             display: none;
             margin-top: 20px;
@@ -180,6 +217,13 @@
         <button id="pauseBtn">暂停</button>
     </div>
     
+    <div class="speed-controls">
+        <span class="speed-label">速度:</span>
+        <button class="speed-btn" data-speed="150">慢速</button>
+        <button class="speed-btn active" data-speed="100">中速</button>
+        <button class="speed-btn" data-speed="60">快速</button>
+    </div>
+    
     <div class="mobile-controls">
         <button class="mobile-btn empty"></button>
         <button class="mobile-btn" id="upBtn">▲</button>
@@ -214,9 +258,31 @@
         let gameLoop = null;
         let isGameRunning = false;
         let isPaused = false;
-        let gameSpeed = 100;
+        let baseSpeed = parseInt(localStorage.getItem('snakeSpeed')) || 100;
+        let gameSpeed = baseSpeed;
         
         highScoreElement.textContent = highScore;
+        
+        // 速度控制
+        const speedButtons = document.querySelectorAll('.speed-btn');
+        speedButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // 更新 UI
+                speedButtons.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // 保存选择
+                baseSpeed = parseInt(btn.dataset.speed);
+                localStorage.setItem('snakeSpeed', baseSpeed);
+                
+                // 如果游戏中，立即应用新速度
+                if (isGameRunning && !isPaused) {
+                    gameSpeed = baseSpeed;
+                    clearInterval(gameLoop);
+                    gameLoop = setInterval(update, gameSpeed);
+                }
+            });
+        });
         
         // 初始化游戏
         function initGame() {
@@ -442,7 +508,7 @@
             initGame();
             isGameRunning = true;
             isPaused = false;
-            gameSpeed = 100;
+            gameSpeed = baseSpeed;
             startBtn.textContent = '游戏中...';
             gameLoop = setInterval(update, gameSpeed);
         }
@@ -577,6 +643,13 @@
         }
         
         window.addEventListener('resize', resizeCanvas);
+        
+        // 初始化速度按钮状态
+        speedButtons.forEach(btn => {
+            if (parseInt(btn.dataset.speed) === baseSpeed) {
+                btn.classList.add('active');
+            }
+        });
         
         // 初始化
         initGame();
