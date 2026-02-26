@@ -421,9 +421,9 @@
         let canPassWall = localStorage.getItem('snakeCanPassWall') === 'true';
         
         // 速度范围
-        const minSpeed = 30;   // 最快（间隔最小）
-        const maxSpeed = 200;  // 最慢（间隔最大）
-        const speedStep = 10;  // 每次调整的步长
+        const minSpeed = 10;    // 最快（间隔最小）
+        const maxSpeed = 500;   // 最慢（间隔最大）
+        const speedStep = 20;   // 每次调整的步长
         
         highScoreElement.textContent = highScore;
         updateSpeedDisplay();
