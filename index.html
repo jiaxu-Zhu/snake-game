@@ -529,6 +529,37 @@
         const gridSize = 20;
         let tileCount = canvas.width / gridSize;
         
+        // 音效系统
+        let audioCtx = null;
+        
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+        
+        function playEatSound() {
+            if (!audioCtx) return;
+            
+            // 创建一个上升的音符音效
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            // 频率从 400Hz 上升到 800Hz
+            oscillator.frequency.setValueAtTime(400, audioCtx.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.1);
+            
+            // 音量包络
+            gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+            
+            oscillator.start(audioCtx.currentTime);
+            oscillator.stop(audioCtx.currentTime + 0.1);
+        }
+        
         // 游戏状态
         let snake = [];
         let food = {};
@@ -793,6 +824,9 @@
                 score += 10;
                 scoreElement.textContent = score;
                 
+                // 播放吃食物音效
+                playEatSound();
+                
                 // 加速
                 if (gameSpeed > 50) {
                     gameSpeed -= 2;
@@ -838,6 +872,9 @@
         // 开始游戏
         function startGame() {
             if (isGameRunning) return;
+            
+            // 初始化音频（需要用户交互）
+            initAudio();
             
             initGame();
             isGameRunning = true;
